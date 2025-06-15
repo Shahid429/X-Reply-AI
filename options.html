@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X AI Reply Generator - Options</title>
+  <style>
+    body {
+      width: 400px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      color: #0f1419;
+      line-height: 1.5;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 0 20px 0;
+      color: #0f1419;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo {
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cfd9de;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #1d9bf0;
+      box-shadow: 0 0 0 2px rgba(29, 155, 240, 0.2);
+    }
+
+    .help-text {
+      font-size: 13px;
+      color: #536471;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .btn {
+      background-color: #1d9bf0;
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #1a8cd8;
+    }
+
+    .btn:active {
+      background-color: #0e7bc4;
+    }
+
+    .btn:disabled {
+      background-color: #8ecdf8;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 16px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+
+    .error {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+
+    .info {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #bbdefb;
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #eaeaea;
+      font-size: 12px;
+      color: #536471;
+      line-height: 1.5;
+    }
+
+    .footer a {
+      color: #1d9bf0;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1><span class="logo">🤖</span> X AI Reply Generator</h1>
+  
+  <div class="form-group">
+    <label for="apiKey">Gemini API Key</label>
+    <input type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off">
+    <p class="help-text">
+      Your API key is stored locally and only sent to Google's Gemini API when generating replies.
+      <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get your API key</a>
+    </p>
+  </div>
+  
+  <button id="save" class="btn">Save</button>
+  
+  <div id="status"></div>
+  
+  <div class="footer">
+    <p>Need help? <a href="#" id="helpLink">View documentation</a></p>
+    <p>Version 1.0.0</p>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html>

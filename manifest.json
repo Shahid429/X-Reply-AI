@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "X AI Reply Generator",
+  "version": "1.0.0",
+  "description": "Generate AI-powered replies for X (Twitter) posts",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://twitter.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://twitter.com/*", "https://x.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png"
+    }
+  },
+  "icons": {
+    "16": "images/icon16.png"
+  },
+  "options_page": "options.html"
+}
