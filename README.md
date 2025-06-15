@@ -1,6 +1,6 @@
 # FlashReply X
 
-A Chrome extension that helps you generate thoughtful and engaging replies to X (Twitter) posts using AI. Quickly craft professional, context-aware responses with just one click.
+A Chrome extension that helps you generate thoughtful and engaging replies to X (Twitter) posts using Google's Gemini AI. Quickly craft professional, context-aware responses with just one click.
 
 ## Features
 
@@ -18,7 +18,7 @@ A Chrome extension that helps you generate thoughtful and engaging replies to X 
 ### Prerequisites
 
 - A modern web browser (Chrome, Edge, Brave, etc.)
-- An OpenAI API key (get one at [OpenAI API Keys](https://platform.openai.com/api-keys))
+- A Google AI API key (get one at [Google AI Studio](https://makersuite.google.com/app/apikey))
 
 ### Setup
 
@@ -37,7 +37,7 @@ A Chrome extension that helps you generate thoughtful and engaging replies to X 
 3. **Configure your API key**
    - Click the extension icon in your browser toolbar
    - Click the "Settings" button
-   - Enter your OpenAI API key and click "Save"
+   - Enter your Google AI API key and click "Save"
 
 ## Usage
 
@@ -50,8 +50,8 @@ A Chrome extension that helps you generate thoughtful and engaging replies to X 
 
 ## Privacy
 
-- Your OpenAI API key is stored securely in Chrome's sync storage
-- The extension only makes API calls to `api.openai.com` when you click the AI Reply button
+- Your Google AI API key is stored securely in Chrome's sync storage
+- The extension only makes API calls to Google's Gemini API when you click the AI Reply button
 - No data is collected or stored by the extension
 - The extension only accesses Twitter.com and X.com domains
 
@@ -85,6 +85,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - Built with ❤️ using vanilla JavaScript
-- Uses the latest AI models for generating replies
+- Powered by Google's Gemini AI for high-quality responses
 - Lightweight and fast performance
+- Secure and private - your data stays on your device
 - Inspired by the need for more meaningful social media interactions
