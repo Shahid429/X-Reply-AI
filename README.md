@@ -1,14 +1,17 @@
-# X AI Reply Generator
+# FlashReply X
 
-A Chrome extension that helps you generate thoughtful and engaging replies to X (Twitter) posts using OpenAI's GPT-4 model.
+A Chrome extension that helps you generate thoughtful and engaging replies to X (Twitter) posts using AI. Quickly craft professional, context-aware responses with just one click.
 
 ## Features
 
 - Add an "AI Reply" button to every X (Twitter) post
 - Generate context-aware, natural-sounding replies with one click
-- Secure storage of your OpenAI API key
+- Secure storage of your API key
 - Clean and intuitive user interface
 - Works with both light and dark themes
+- Fast and lightweight extension
+- No unnecessary permissions
+- Regular updates and improvements
 
 ## Installation
 
@@ -20,8 +23,11 @@ A Chrome extension that helps you generate thoughtful and engaging replies to X 
 ### Setup
 
 1. **Download the extension**
-   - Clone this repository or download the source code
-   - Alternatively, download the latest release from the [Releases](https://github.com/yourusername/x-ai-reply-extension/releases) page
+   - Clone this repository:
+     ```bash
+     git clone https://github.com/Harsha2318/FlashReply_X.git
+     ```
+   - Or download the latest release from the [Releases](https://github.com/Harsha2318/FlashReply_X/releases) page
 
 2. **Load the extension in Chrome**
    - Open Chrome and go to `chrome://extensions/`
@@ -79,5 +85,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - Built with ❤️ using vanilla JavaScript
-- Uses the OpenAI API for generating replies
+- Uses the latest AI models for generating replies
+- Lightweight and fast performance
 - Inspired by the need for more meaningful social media interactions
