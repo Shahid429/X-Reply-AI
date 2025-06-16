@@ -61,23 +61,27 @@ async function handleAIReplyClick(postElement, button) {
     }
     
     const postText = postTextElement.textContent.trim();
-    const author = authorElement ? `@${authorElement.textContent.replace('@', '')}` : 'this post';
+    const author = authorElement ? authorElement.textContent.trim() : 'the author';
     
-    // Generate reply using Chrome's storage API to get the API key
-    chrome.storage.sync.get(['geminiApiKey'], async (result) => {
+    // Get API key and tone from storage
+    chrome.storage.sync.get(['geminiApiKey', 'tone'], async (result) => {
       try {
-        if (!result.geminiApiKey) {
-          throw new Error('Gemini API key not found. Please set it in the extension options.');
+        const apiKey = result.geminiApiKey;
+        const tone = result.tone || 'friendly'; // Default to 'friendly' if not set
+        
+        if (!apiKey) {
+          throw new Error('Please set your Gemini API key in the extension settings.');
         }
         
-        const reply = await generateAIReply(postText, author, result.geminiApiKey);
+        // Generate AI reply with tone
+        const reply = await generateAIReply(postText, author, apiKey, tone);
         
-        // Click the reply button to open the reply box
+        // Find and click the reply button to open the reply box
         const replyButton = postElement.querySelector(CONFIG.SELECTORS.REPLY_BUTTON);
         if (replyButton) {
           replyButton.click();
           
-          // Wait for reply box to appear and insert the generated reply
+          // Wait for the reply box to appear and insert the generated text
           setTimeout(() => {
             const replyBox = document.querySelector(CONFIG.SELECTORS.REPLY_BOX);
             if (replyBox) {
@@ -103,9 +107,23 @@ async function handleAIReplyClick(postElement, button) {
   }
 }
 
-// Generate AI reply using Gemini 2.0 Flash API
-async function generateAIReply(postText, author, apiKey) {
+// Generate AI reply using Gemini 2.0 Flash API with tone
+async function generateAIReply(postText, author, apiKey, tone = 'friendly') {
+  // Define tone instructions
+  const toneInstructions = {
+    'casual': 'Use a casual, conversational tone as if talking to a friend. Feel free to use contractions and informal language.',
+    'professional': 'Use a professional and polished tone suitable for business or formal communication. Be clear and concise.',
+    'friendly': 'Use a warm and approachable tone. Be polite and engaging.',
+    'enthusiastic': 'Use an excited and energetic tone with positive language and exclamation points! Show enthusiasm!',
+    'witty': 'Be clever and humorous. Include a touch of wit or a playful remark if appropriate.',
+    'formal': 'Use a very formal and respectful tone, suitable for professional or official communication.'
+  };
+
+  const toneInstruction = toneInstructions[tone] || toneInstructions['friendly'];
+
   const prompt = `Write a thoughtful, engaging, and concise reply to ${author}'s post on X (Twitter). 
+
+Tone: ${toneInstruction}
 
 Post: "${postText}"
 

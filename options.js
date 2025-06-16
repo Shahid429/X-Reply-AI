@@ -1,23 +1,28 @@
 document.addEventListener('DOMContentLoaded', function() {
   const apiKeyInput = document.getElementById('apiKey');
+  const toneSelect = document.getElementById('tone');
   const saveButton = document.getElementById('save');
   const statusElement = document.getElementById('status');
   const helpLink = document.getElementById('helpLink');
 
-  // Load saved API key
-  chrome.storage.sync.get(['geminiApiKey'], function(result) {
+  // Load saved settings
+  chrome.storage.sync.get(['geminiApiKey', 'tone'], function(result) {
     if (result.geminiApiKey) {
       apiKeyInput.value = result.geminiApiKey;
-      showStatus('Gemini API key loaded successfully.', 'success');
     }
+    if (result.tone) {
+      toneSelect.value = result.tone;
+    }
+    showStatus('Settings loaded successfully.', 'success');
   });
 
-  // Save API key
+  // Save settings
   saveButton.addEventListener('click', function() {
     const apiKey = apiKeyInput.value.trim();
+    const tone = toneSelect.value;
     
     if (!apiKey) {
-      showStatus('Please enter your OpenAI API key.', 'error');
+      showStatus('Please enter your Gemini API key.', 'error');
       return;
     }
     
@@ -27,12 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     
-    // Save the API key to Chrome's storage
-    chrome.storage.sync.set({ geminiApiKey: apiKey }, function() {
+    // Save settings to Chrome's storage
+    chrome.storage.sync.set({ 
+      geminiApiKey: apiKey,
+      tone: tone 
+    }, function() {
       if (chrome.runtime.lastError) {
-        showStatus('Error saving API key: ' + chrome.runtime.lastError.message, 'error');
+        showStatus('Error saving settings: ' + chrome.runtime.lastError.message, 'error');
       } else {
-        showStatus('Gemini API key saved successfully!', 'success');
+        showStatus('Settings saved successfully!', 'success');
       }
     });
   });
