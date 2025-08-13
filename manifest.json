@@ -1,21 +1,35 @@
 {
   "manifest_version": 3,
-  "name": "X AI Reply Generator",
+  "name": "TAHZEEB",
   "version": "1.0.0",
   "description": "Generate AI-powered replies for X (Twitter) posts",
   "permissions": [
     "scripting",
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "https://twitter.com/*",
-    "https://generativelanguage.googleapis.com/*"
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.openai.com/*",
+    "https://api.perplexity.ai/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "generate-reply": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "Generate AI reply for first visible post"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["https://twitter.com/*", "https://x.com/*"],
-      "js": ["content.js"],
+      "js": ["prompts.js", "content.js"],
       "css": ["styles.css"]
     }
   ],

@@ -3,27 +3,44 @@ document.addEventListener('DOMContentLoaded', function() {
   const statusText = document.getElementById('statusText');
   const openOptionsBtn = document.getElementById('openOptions');
   const openTwitterBtn = document.getElementById('openTwitter');
+  const versionElement = document.getElementById('version');
 
-  // Check if API key is set
-  chrome.storage.sync.get(['geminiApiKey'], function(result) {
-    if (result.geminiApiKey) {
-      setStatus('connected', 'Gemini API key configured and ready to use!');
-    } else {
-      setStatus('disconnected', 'Please set your Gemini API key in settings.');
-    }
-  });
+  // Set version text once (manifest version is static here)
+  if (versionElement) {
+    versionElement.textContent = 'v1.0.0';
+  }
 
-  // Open options page when settings button is clicked
+  // Check if any API key is set
+  try {
+    chrome.storage.sync.get(['geminiApiKeys', 'openaiApiKeys', 'perplexityApiKeys'], function(result) {
+      const hasGemini = Array.isArray(result.geminiApiKeys) && result.geminiApiKeys.length > 0;
+      const hasOpenAI = Array.isArray(result.openaiApiKeys) && result.openaiApiKeys.length > 0;
+      const hasPerplexity = Array.isArray(result.perplexityApiKeys) && result.perplexityApiKeys.length > 0;
+      if (hasGemini || hasOpenAI || hasPerplexity) {
+        setStatus('connected', 'API keys configured and ready!');
+      } else {
+        setStatus('disconnected', 'Add at least one API key in settings.');
+      }
+    });
+  } catch (e) {
+    setStatus('disconnected', 'Unable to read settings.');
+  }
+
+  // Open options in a compact popup window
   openOptionsBtn.addEventListener('click', function(e) {
     e.preventDefault();
-    chrome.runtime.openOptionsPage();
+    try {
+      chrome.windows.create({ url: 'options.html', type: 'popup', width: 460, height: 720 });
+    } catch {
+      try { chrome.runtime.openOptionsPage(); } catch {}
+    }
     window.close();
   });
 
   // Open Twitter in a new tab
   openTwitterBtn.addEventListener('click', function(e) {
     e.preventDefault();
-    chrome.tabs.create({ url: 'https://twitter.com' });
+    try { chrome.tabs.create({ url: 'https://twitter.com' }); } catch {}
     window.close();
   });
 
@@ -34,16 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set appropriate icon
     const icon = statusElement.querySelector('.status-icon');
-    if (type === 'connected') {
-      icon.textContent = '✅';
-    } else {
-      icon.textContent = '⚠️';
-    }
+    icon.textContent = type === 'connected' ? '✅' : '⚠️';
   }
-
-  // Add version number
-  const versionElement = document.createElement('div');
-  versionElement.className = 'version';
-  versionElement.textContent = 'v1.0.0';
-  document.querySelector('.footer').appendChild(versionElement);
 });

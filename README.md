@@ -1,111 +1,75 @@
-# FlashReply X
+# TAHZEEB
 
-A Chrome extension that helps you generate thoughtful and engaging replies to X (Twitter) posts using Google's Gemini AI. Quickly craft personalized, context-aware responses with just one click.
-
-![Screenshot 2025-06-15 221055](https://github.com/user-attachments/assets/ddff8edd-e4be-40a6-80bf-e7943d7224b4)
-
-![image](https://github.com/user-attachments/assets/cd5cd5d3-f7cc-4140-9b94-a241d649b1bf)
-
+A Chrome extension that helps you generate thoughtful, humanlike replies to X (Twitter) posts using multiple AI providers (Gemini, OpenAI, Perplexity). One click drafts a concise reply you can edit and post.
 
 ## ✨ Features
 
-- **One-Click AI Replies** - Generate thoughtful responses with a single click
-- **Personalized Tone** - Choose from multiple tone options to match your style:
-  - 😊 Casual - Informal and conversational
-  - 💼 Professional - Polished and business-appropriate
-  - 🤝 Friendly - Warm and approachable (default)
-  - 🎉 Enthusiastic - Energetic and positive
-  - 😄 Witty - Clever with a touch of humor
-  - 🎩 Formal - Very proper and respectful
-- **Secure** - Your API key is stored locally in Chrome's sync storage
-- **Lightweight** - Minimal impact on browser performance
-- **Dark Mode Ready** - Automatically adapts to your system theme
-- **Privacy-Focused** - No data collection, works entirely in your browser
+- One‑click AI replies on X/Twitter
+- Custom persona prompt and curated built‑in presets
+- Multi‑provider support with automatic fallback
+  - Google Gemini (1.5‑flash/pro)
+  - OpenAI (gpt‑4o‑mini, gpt‑4o)
+  - Perplexity (sonar family)
+- Multiple API keys per provider; tries keys in order
+- Background fetching with timeouts and last‑working cache
+- Visible‑only processing for speed (IntersectionObserver)
+- Rate‑limited with small jitter for safer usage
+- Reply sanitization (no citations like [1], single line, <280 chars)
 
 ## Installation
 
-### Prerequisites
+1. Clone or download this folder
+2. Open `chrome://extensions/`
+3. Enable Developer mode
+4. Click Load unpacked and select the extension directory
 
-- A modern web browser (Chrome, Edge, Brave, etc.)
-- A Google AI API key (get one at [Google AI Studio](https://makersuite.google.com/app/apikey))
+## Setup
 
-## 🚀 Quick Start
+1. Click the extension icon → Settings
+2. Enter API keys (one per line) for any providers you use
+3. Optionally set a custom persona and choose a preset
+4. Pick models per provider
+5. Save
 
-### 1. Get Your API Key
-1. Get a free API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Copy your API key (starts with `AIzaSy...`)
+## How to Use
 
-### 2. Install the Extension
-```bash
-git clone https://github.com/Harsha2318/FlashReply_X.git
-```
+1. Browse X/Twitter
+2. Click the 🤖 button next to a post’s reply
+3. The draft reply is inserted for you to review/edit
 
-### 3. Load in Chrome
-1. Open `chrome://extensions/`
-2. Enable "Developer mode" (top-right)
-3. Click "Load unpacked" and select the extension folder
+Tip: You can also use the keyboard shortcut Ctrl+Shift+Y to draft a reply for the first visible post.
 
-### 4. Configure Settings
-1. Click the extension icon
-2. Select "Settings" (⚙️)
-3. Paste your API key
-4. Choose your preferred tone
-5. Click "Save"
+## Safety and Performance
 
-## 💡 How to Use
+- Does not auto‑post; you stay in control
+- Rate‑limited actions with small jitter
+- Minimal DOM footprint; visible‑only processing
+- Network requests handled in background for isolation and reliability
+- Automatic fallback across providers/keys on overload or rate limits
 
-1. **Find a Tweet** - Browse Twitter as usual
-2. **Click 🤖 AI Reply** - Next to any tweet's reply button
-3. **Review & Post** - The response is automatically inserted for you to review
-4. **Edit if needed** - Make any adjustments before posting
+## Configuration Details
 
-### Pro Tips
-- Change your tone anytime in settings
-- The extension works in both light and dark mode
-- Your preferences sync across devices when signed into Chrome
+- Multi‑keys: Paste one key per line for each provider
+- Models:
+  - Gemini: `gemini-1.5-flash`, `gemini-1.5-pro`
+  - OpenAI: `gpt-4o-mini`, `gpt-4o`
+  - Perplexity: `sonar`, `sonar-small`, `sonar-large`
+- Presets:
+  - Ultra‑Short Humanlike (≤10 words, no punctuation)
+  - Casual Human Reply (≤10 words, simple, no hashtags)
+  - Ultra‑Compact (≤6 words, simple, no punctuation)
 
-## 🔒 Privacy & Security
+## Privacy
 
-We take your privacy seriously:
+- Keys are stored in Chrome storage and used only to call provider APIs
+- No analytics; all generation requests are initiated by you
 
-- **Local Processing** - All AI processing happens in Google's secure servers
-- **No Data Collection** - We don't store or track any of your data
-- **Secure Storage** - Your API key is encrypted in Chrome's sync storage
-- **Minimal Permissions** - Only accesses Twitter/X domains and Google's API
+## Troubleshooting
 
-## 🛠 Development
-
-### Building from Source
-
-1. Clone the repository
-2. Make your changes
-3. Load the extension in Chrome:
-   ```bash
-   git clone https://github.com/yourusername/x-ai-reply-extension.git
-   cd x-ai-reply-extension
-   ```
-
-2. Make your changes to the code
-
-3. Load the extension in Chrome
-   - Go to `chrome://extensions/`
-   - Enable "Developer mode"
-   - Click "Load unpacked" and select the extension directory
-
-### Testing
-
-1. Make sure the extension is loaded in Chrome
-2. Navigate to Twitter and test the functionality
-3. Check the browser console for any errors (right-click -> Inspect -> Console)
+- If you see “Extension context invalidated”, reload the extension and refresh the X tab
+- If a provider is overloaded, the extension automatically tries the next key/provider
+- If insertion fails, ensure the reply box is visible and try again
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Built with ❤️ using vanilla JavaScript
-- Powered by Google's Gemini AI for high-quality responses
-- Lightweight and fast performance
-- Secure and private - your data stays on your device
-- Inspired by the need for more meaningful social media interactions
+MIT

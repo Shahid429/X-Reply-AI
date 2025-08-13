@@ -3,157 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>X AI Reply Generator - Options</title>
+  <title>TAHZEEB - Options</title>
   <style>
-    body {
-      width: 400px;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      color: #0f1419;
-      line-height: 1.5;
-    }
-
-    h1 {
-      font-size: 20px;
-      margin: 0 0 20px 0;
-      color: #0f1419;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .logo {
-      font-size: 24px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cfd9de;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: border-color 0.2s;
-    }
-
-    input[type="password"]:focus {
-      outline: none;
-      border-color: #1d9bf0;
-      box-shadow: 0 0 0 2px rgba(29, 155, 240, 0.2);
-    }
-
-    .help-text {
-      font-size: 13px;
-      color: #536471;
-      margin-top: 6px;
-      line-height: 1.4;
-    }
-
-    .btn {
-      background-color: #1d9bf0;
-      color: white;
-      border: none;
-      border-radius: 9999px;
-      padding: 10px 16px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .btn:hover {
-      background-color: #1a8cd8;
-    }
-
-    .btn:active {
-      background-color: #0e7bc4;
-    }
-
-    .btn:disabled {
-      background-color: #8ecdf8;
-      cursor: not-allowed;
-    }
-
-    #status {
-      margin-top: 16px;
-      padding: 10px;
-      border-radius: 4px;
-      font-size: 13px;
-      display: none;
-    }
-
-    .success {
-      background-color: #e8f5e9;
-      color: #2e7d32;
-      border: 1px solid #c8e6c9;
-    }
-
-    .error {
-      background-color: #ffebee;
-      color: #c62828;
-      border: 1px solid #ffcdd2;
-    }
-
-    .info {
-      background-color: #e3f2fd;
-      color: #1565c0;
-      border: 1px solid #bbdefb;
-    }
-
-    .footer {
-      margin-top: 30px;
-      padding-top: 15px;
-      border-top: 1px solid #eaeaea;
-      font-size: 12px;
-      color: #536471;
-      line-height: 1.5;
-    }
-
-    .footer a {
-      color: #1d9bf0;
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
+    body { width: 420px; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; color: #0f1419; line-height: 1.5; background: #fff; }
+    h1 { font-size: 20px; margin: 0 0 16px 0; color: #0f1419; display: flex; align-items: center; gap: 8px; }
+    .logo { font-size: 24px; }
+    .section { border: 1px solid #e6ecf0; border-radius: 10px; padding: 14px; margin-bottom: 14px; background: #fafafa; }
+    .section-title { font-weight: 700; margin: 0 0 10px 0; font-size: 14px; color: #0f1419; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
+    input[type="password"], textarea, select { width: 100%; padding: 10px 12px; border: 1px solid #cfd9de; border-radius: 8px; font-size: 14px; background: #fff; }
+    input[type="password"]:focus, textarea:focus, select:focus { outline: none; border-color: #1d9bf0; box-shadow: 0 0 0 2px rgba(29, 155, 240, 0.15); }
+    textarea { min-height: 90px; resize: vertical; }
+    .help-text { font-size: 12px; color: #536471; margin-top: 6px; line-height: 1.4; }
+    .btn { background-color: #1d9bf0; color: white; border: none; border-radius: 9999px; padding: 10px 16px; font-weight: 700; font-size: 14px; cursor: pointer; transition: background-color 0.2s; width: 100%; }
+    .btn:hover { background-color: #1a8cd8; }
+    .btn:active { background-color: #0e7bc4; }
+    .btn:disabled { background-color: #8ecdf8; cursor: not-allowed; }
+    #status { margin-top: 12px; padding: 10px; border-radius: 8px; font-size: 13px; display: none; }
+    .success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+    .error { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    .info { background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+    .footer { margin-top: 16px; padding-top: 12px; border-top: 1px solid #eaeaea; font-size: 12px; color: #536471; line-height: 1.5; text-align: center; }
+    .footer a { color: #1d9bf0; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <h1><span class="logo">🤖</span> X AI Reply Generator</h1>
+  <h1><span class="logo">🤖</span> TAHZEEB</h1>
   
-  <div class="form-group">
-    <label for="apiKey">Gemini API Key</label>
-    <input type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off">
-    <p class="help-text">
-      Your API key is stored locally and only sent to Google's Gemini API when generating replies.
-      <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get your API key</a>
-    </p>
+  <div class="section">
+    <div class="section-title">API</div>
+    <div class="form-group">
+      <label for="geminiKeys">Gemini API Keys (one per line)</label>
+      <textarea id="geminiKeys" placeholder="AIzaSy...
+AIzaSy..."></textarea>
+      <p class="help-text">We’ll try keys in order. Only sent to Google's Gemini API when generating replies. <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get your API key</a></p>
+    </div>
+    <div class="form-group">
+      <label for="openaiKeys">OpenAI API Keys (one per line)</label>
+      <textarea id="openaiKeys" placeholder="sk-...
+sk-..."></textarea>
+      <p class="help-text">Used with Chat Completions. We recommend a cost‑effective model like gpt-4o-mini.</p>
+    </div>
+    <div class="form-group">
+      <label for="perplexityKeys">Perplexity API Keys (one per line)</label>
+      <textarea id="perplexityKeys" placeholder="pplx-...
+pplx-..."></textarea>
+      <p class="help-text">Uses Perplexity’s chat completions (sonar models).</p>
+    </div>
   </div>
 
-  <div class="form-group">
-    <label for="tone">Reply Tone</label>
-    <select id="tone" class="form-control">
-      <option value="casual">😊 Casual</option>
-      <option value="professional">💼 Professional</option>
-      <option value="friendly">🤝 Friendly</option>
-      <option value="enthusiastic">🎉 Enthusiastic</option>
-      <option value="witty">😄 Witty</option>
-      <option value="formal">🎩 Formal</option>
-    </select>
-    <p class="help-text">
-      Choose the tone for your AI-generated replies.
-    </p>
+  <div class="section">
+    <div class="section-title">Models</div>
+    <div class="form-group">
+      <label for="geminiModel">Gemini Model</label>
+      <select id="geminiModel">
+        <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+        <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="openaiModel">OpenAI Model</label>
+      <select id="openaiModel">
+        <option value="gpt-4o-mini">gpt-4o-mini</option>
+        <option value="gpt-4o">gpt-4o</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="perplexityModel">Perplexity Model</label>
+      <select id="perplexityModel">
+        <option value="sonar">sonar</option>
+        <option value="sonar-small">sonar-small</option>
+        <option value="sonar-large">sonar-large</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Persona</div>
+    <div class="form-group">
+      <label for="persona">Custom Persona Prompt (optional)</label>
+      <textarea id="persona" placeholder="e.g., You are a witty, empathetic social media manager who crafts concise, human replies that align with my voice."></textarea>
+      <p class="help-text">This guides the AI’s role and style.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Built-in Presets</div>
+    <div class="form-group">
+      <label for="preset">Preset</label>
+      <select id="preset" class="form-control">
+        <option value="prompt1">Ultra-Short Humanlike (≤10 words, no punctuation)</option>
+        <option value="prompt2" selected>Casual Human Reply (≤10 words, simple, no hashtags)</option>
+        <option value="prompt3">Ultra-Compact (≤6 words, simple, no punctuation)</option>
+      </select>
+    </div>
   </div>
   
   <button id="save" class="btn">Save</button>
@@ -165,6 +110,7 @@
     <p>Version 1.0.0</p>
   </div>
   
+  <script src="prompts.js"></script>
   <script src="options.js"></script>
 </body>
 </html>
