@@ -42,5 +42,11 @@
   "icons": {
     "16": "images/icon16.png"
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["images/grok.png"],
+      "matches": ["https://twitter.com/*", "https://x.com/*"]
+    }
+  ],
   "options_page": "options.html"
 }

@@ -12,8 +12,7 @@ const CONFIG = {
   },
   BUTTON_CLASS: 'ai-reply-btn',
   BUTTON_LOADING_CLASS: 'ai-reply-btn-loading',
-  BUTTON_TEXT: '🤖 AI Reply',
-  BUTTON_LOADING_TEXT: 'Generating...',
+  BUTTON_ICON: 'images/grok.png',
 };
 
 function isContextInvalidatedError(message) {
@@ -94,7 +93,10 @@ function addAIReplyButton(postElement) {
   if (!replyButton) return;
   const aiButton = document.createElement('div');
   aiButton.className = CONFIG.BUTTON_CLASS;
-  aiButton.textContent = CONFIG.BUTTON_TEXT;
+  const img = document.createElement('img');
+  img.src = chrome.runtime.getURL(CONFIG.BUTTON_ICON);
+  img.alt = 'AI Reply';
+  aiButton.appendChild(img);
   const buttonContainer = replyButton.parentElement;
   if (buttonContainer) buttonContainer.parentNode.insertBefore(aiButton, buttonContainer.nextSibling);
   else replyButton.parentNode.appendChild(aiButton);
@@ -109,7 +111,6 @@ function addAIReplyButton(postElement) {
 async function handleAIReplyClick(postElement, button) {
   try {
     button.classList.add(CONFIG.BUTTON_LOADING_CLASS);
-    button.textContent = CONFIG.BUTTON_LOADING_TEXT;
     const postTextElement = postElement.querySelector(CONFIG.SELECTORS.POST_TEXT);
     const authorElement = postElement.querySelector(CONFIG.SELECTORS.POST_AUTHOR);
     if (!postTextElement) throw new Error('Could not find post text');
@@ -152,7 +153,6 @@ async function handleAIReplyClick(postElement, button) {
     alert(`Error: ${error.message}`);
   } finally {
     button.classList.remove(CONFIG.BUTTON_LOADING_CLASS);
-    button.textContent = CONFIG.BUTTON_TEXT;
   }
 }
 

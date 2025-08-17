@@ -1,51 +1,68 @@
-/* Style for the AI Reply button */
+/* Modern style for the AI Reply button */
 .ai-reply-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  min-height: 32px;
-  padding: 0 12px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   margin-left: 12px;
   border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 16px;
-  color: #0f1419;
-  background-color: #1d9bf0;
-  border: 1px solid #1d9bf0;
+  background-color: rgba(239, 243, 244, 0);
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition: all 0.2s ease;
   user-select: none;
-  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  position: relative;
+  left: -35px;
+}
+
+.ai-reply-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: brightness(0.85);
+  transition: all 0.2s ease;
 }
 
 .ai-reply-btn:hover {
-  background-color: #1a8cd8;
-  border-color: #1a8cd8;
+  background-color: rgba(0, 0, 0, 0.831);
+  border-color: rgba(29, 156, 240, 0.034);
+  transform: scale(1.05);
+}
+
+.ai-reply-btn:hover img {
+  filter: brightness(1);
 }
 
 .ai-reply-btn:active {
-  background-color: #0e7bc4;
-  border-color: #0e7bc4;
+  transform: scale(0.95);
+  background-color: rgba(239, 243, 244, 0.15);
 }
 
 /* Loading state */
 .ai-reply-btn.ai-reply-btn-loading {
-  position: relative;
-  color: transparent;
   pointer-events: none;
+}
+
+.ai-reply-btn.ai-reply-btn-loading img {
+  opacity: 0;
 }
 
 .ai-reply-btn.ai-reply-btn-loading::after {
   content: '';
   position: absolute;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  animation: ai-reply-spin 0.8s linear infinite;
+  background: #d2e3ed;
+  box-shadow: 0 0 0 0 rgba(199, 222, 238, 0.4);
+  animation: ai-reply-pulse 1s infinite;
+}
+
+@keyframes ai-reply-pulse {
+  100% { box-shadow: 0 0 0 20px rgba(29, 155, 240, 0); }
 }
 
 @keyframes ai-reply-spin {
@@ -63,17 +80,13 @@
 /* Make button more compact on mobile */
 @media (max-width: 688px) {
   .ai-reply-btn {
-    padding: 0 8px;
+    width: 28px;
+    height: 28px;
     margin-left: 8px;
-    font-size: 13px;
   }
   
-  .ai-reply-btn::before {
-    content: '🤖';
-    margin-right: 4px;
-  }
-  
-  .ai-reply-btn span {
-    display: none;
+  .ai-reply-btn img {
+    width: 14px;
+    height: 14px;
   }
 }
