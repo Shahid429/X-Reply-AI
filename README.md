@@ -2,6 +2,13 @@
 
 A Chrome extension that helps you generate thoughtful, humanlike replies to X (Twitter) posts using multiple AI providers (Gemini, OpenAI, Perplexity). One click drafts a concise reply you can edit and post.
 
+**Recent Improvements:**
+- Migrated to TypeScript for type safety
+- Modularized codebase for better maintainability
+- Added ESLint and Prettier for code quality
+- Implemented remote configuration with password protection
+- Added periodic config updates
+
 ## ✨ Features
 
 - One‑click AI replies on X/Twitter
@@ -58,6 +65,59 @@ Tip: You can also use the keyboard shortcut Ctrl+Shift+Y to draft a reply for th
   - Ultra‑Short Humanlike (≤10 words, no punctuation)
   - Casual Human Reply (≤10 words, simple, no hashtags)
   - Ultra‑Compact (≤6 words, simple, no punctuation)
+
+## Development
+
+This extension is built with TypeScript for better type safety and maintainability.
+
+### Setup
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Build the extension:
+   ```bash
+   npm run build
+   ```
+
+3. For development with watch mode:
+   ```bash
+   npm run watch
+   ```
+
+4. Lint and format code:
+   ```bash
+   npm run lint
+   npm run format
+   ```
+
+### Project Structure
+
+- `src/`: TypeScript source files
+  - `background.ts`: Service worker with API calls and config fetching
+  - `config.ts`: Remote configuration management
+  - `api.ts`: AI provider API functions
+  - `utils.ts`: Utility functions for storage and error handling
+- `dist/`: Compiled JavaScript files (generated)
+- `popup.js`, `options.js`, `content.js`: UI scripts (can be migrated to TS later)
+
+### Remote Configuration
+
+The extension supports remote configuration via a JSON file hosted on GitHub Pages. Create a repo with `config.json`:
+
+```json
+{
+  "enabled": true,
+  "password": "yourPassword",
+  "announcement": "Update message",
+  "alert": "Warning message",
+  "message": "Password prompt"
+}
+```
+
+Update `CONFIG_URL` in `config.ts` to point to your config file.
 
 ## Privacy
 

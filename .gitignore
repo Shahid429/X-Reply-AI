@@ -1,0 +1,5 @@
+node_modules/
+dist/
+*.log
+archive_root_duplicates/
+release/

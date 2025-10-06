@@ -1,0 +1,33 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Minify
+        run: npm run minify-dist
+      - name: Create release zip
+        run: |
+          mkdir -p release
+          zip -r release/TAHZEEB-dist.zip dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-zip
+          path: release/TAHZEEB-dist.zip

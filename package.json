@@ -1,0 +1,27 @@
+{
+  "name": "x-reply-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension for AI-powered replies on X (Twitter)",
+  "scripts": {
+  "build": "tsc && npm run copy-files",
+  "prepare": "npm run build",
+  "release": "powershell -Command \"New-Item -ItemType Directory -Force release; Compress-Archive -Path .\\dist\\* -DestinationPath .\\release\\TAHZEEB-dist.zip -Force\"",
+  "build:prod": "npm run build && npm run minify-dist",
+  "minify-dist": "node scripts/minify-dist.js",
+    "watch": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+  "copy-files": "cpy manifest.json dist/"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+  "cpy-cli": "^5.0.0",
+  "terser": "^5.20.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}

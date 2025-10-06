@@ -13,10 +13,12 @@
     "https://twitter.com/*",
     "https://generativelanguage.googleapis.com/*",
     "https://api.openai.com/*",
-    "https://api.perplexity.ai/*"
+    "https://api.perplexity.ai/*",
+    "https://*.github.io/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "commands": {
     "generate-reply": {
@@ -50,6 +52,10 @@
     {
       "resources": ["images/grok.png"],
       "matches": ["https://twitter.com/*", "https://x.com/*"]
+    },
+    {
+      "resources": ["dashboard.html"],
+      "matches": ["<all_urls>"]
     }
   ],
   "options_page": "options.html"
