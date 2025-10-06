@@ -67,7 +67,7 @@ const postObserver = new IntersectionObserver((entries) => {
 let lastActionAt = 0;
 function canAct() {
   const now = Date.now();
-  if (now - lastActionAt < 4000) return false;
+  if (now - lastActionAt < 1500) return false;
   lastActionAt = now;
   return true;
 }
