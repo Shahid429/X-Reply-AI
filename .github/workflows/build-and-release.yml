@@ -55,7 +55,14 @@ jobs:
           mkdir -p release
           cd dist
           
+          echo "Current directory: $(pwd)"
+          echo "Files in dist: $(ls -la)"
+          
           # Determine version based on trigger type
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             # For tags: use tag name (remove 'v' prefix if present)
             TAG_NAME="${GITHUB_REF_NAME}"
@@ -69,7 +76,14 @@ jobs:
           
           EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
           echo "Creating extension: $EXTENSION_NAME"
+          
+          # Check if zip command exists
+          which zip || echo "zip command not found"
+          
           zip -r "../release/${EXTENSION_NAME}" .
+          ZIP_RESULT=$?
+          echo "Zip command exit code: $ZIP_RESULT"
+          
           cd ..
           
           echo "Created extension: ${EXTENSION_NAME}"
