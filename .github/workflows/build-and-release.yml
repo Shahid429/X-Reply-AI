@@ -98,7 +98,7 @@ jobs:
           retention-days: 30
 
       - name: Commit release to repo folder
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/')
         run: |
           # Create releases folder if it doesn't exist
           mkdir -p releases
@@ -165,6 +165,33 @@ jobs:
           
           echo "Created extension: ${EXTENSION_NAME}"
           ls -la release/
+
+      - name: Commit release to repo folder
+        run: |
+          # Create releases folder if it doesn't exist
+          mkdir -p releases
+          
+          # Clean up old releases (keep only the latest)
+          cd releases
+          rm -f *.zip
+          cd ..
+          
+          # Copy the new archive to releases folder
+          cp release/*.zip releases/
+          
+          # Configure git
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Add and commit the release file
+          git add releases/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            NEW_FILE=$(ls releases/*.zip | head -1 | xargs basename)
+            git commit -m "🤖 Add extension release: ${NEW_FILE}" || echo "Commit failed, possibly due to conflicts"
+            git push origin main || echo "Push failed, but build artifacts are still available"
+          fi
 
       - name: Create GitHub Release
         run: |
