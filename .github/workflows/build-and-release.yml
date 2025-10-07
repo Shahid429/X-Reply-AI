@@ -189,7 +189,7 @@ jobs:
             echo "No changes to commit"
           else
             NEW_FILE=$(ls releases/*.zip | head -1 | xargs basename)
-            git commit -m "🤖 Add extension release: ${NEW_FILE}" || echo "Commit failed, possibly due to conflicts"
+            git commit -m "Extension release: ${NEW_FILE}" || echo "Commit failed, possibly due to conflicts"
             git push origin main || echo "Push failed, but build artifacts are still available"
           fi
 
