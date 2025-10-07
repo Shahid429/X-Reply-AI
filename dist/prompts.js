@@ -1,0 +1,1 @@
+!function(){const t={prompt1:"reply this tweet in 10 words",prompt2:"reply this post in 6 simple words",prompt3:"reply this tweet in 10 simple casual words."};window.BUILT_IN_PROMPTS=t}();

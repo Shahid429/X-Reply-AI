@@ -65,7 +65,7 @@ jobs:
           retention-days: 30
 
       - name: Upload release archive
-        if: github.event_name == 'release'
+        if: success() && github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: x-reply-ai-release-${{ github.event.release.tag_name }}
@@ -73,7 +73,7 @@ jobs:
           retention-days: 90
 
       - name: Upload release assets
-        if: github.event_name == 'release'
+        if: success() && github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
           files: release/X-Reply-AI-v${{ github.event.release.tag_name }}.zip

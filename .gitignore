@@ -6,12 +6,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Build outputs
-dist/
-build/
-release/
-*.zip
-
 # Development files
 archive_root_duplicates/
 

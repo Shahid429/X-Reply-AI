@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X Reply AI - Dashboard</title>
+  <style>
+    :root {
+      --primary-color: #1d9bf0;
+      --primary-hover: #1a91da;
+      --secondary-color: #536471;
+      --success-color: #00ba7c;
+      --warning-color: #f7b928;
+      --error-color: #f4212e;
+      --background-color: #ffffff;
+      --surface-color: #fafafa;
+      --border-color: #e6ecf0;
+      --text-primary: #0f1419;
+      --text-secondary: #536471;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 16px;
+      --spacing-xl: 20px;
+      --spacing-2xl: 24px;
+      --font-size-xs: 12px;
+      --font-size-sm: 13px;
+      --font-size-base: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 18px;
+      --font-size-2xl: 20px;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      --gradient-surface: linear-gradient(135deg, var(--surface-color), #f0f2f5);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.5;
+      background: var(--background-color);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body {
+      padding: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+
+    /* Header */
+    .header {
+      background: var(--gradient-primary);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+      color: white;
+      box-shadow: var(--shadow);
+      text-align: center;
+      position: relative;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: var(--spacing-md);
+      right: var(--spacing-md);
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 18px;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--border-radius-sm);
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .subtitle {
+      margin: var(--spacing-sm) 0 0 0;
+      font-size: var(--font-size-sm);
+      opacity: 0.9;
+      font-weight: var(--font-weight-normal);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .stat-card {
+      background: var(--gradient-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-icon {
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--spacing-sm);
+      display: block;
+    }
+
+    .stat-value {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--primary-color);
+      margin-bottom: var(--spacing-xs);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .stat-period {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      margin-top: var(--spacing-xs);
+    }
+
+    /* Reply History */
+    .history-section {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .history-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+      gap: var(--spacing-md);
+    }
+
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      padding-right: 40px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      background: var(--background-color);
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: var(--spacing-sm);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .history-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .btn.small {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-size: var(--font-size-xs);
+    }
+
+    .reply-item {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .reply-item:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .reply-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .reply-time {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+
+    .reply-model {
+      font-size: var(--font-size-xs);
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 6px;
+      border-radius: var(--border-radius-sm);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .reply-content {
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+      margin-bottom: var(--spacing-sm);
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .reply-actions {
+      display: flex;
+      gap: var(--spacing-md);
+    }
+
+    .reply-action {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.2s ease;
+      padding: var(--spacing-xs);
+      border-radius: var(--border-radius-sm);
+    }
+
+    .reply-action:hover {
+      color: var(--primary-color);
+      background: rgba(29, 155, 240, 0.1);
+    }
+
+    .history-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+      gap: var(--spacing-md);
+    }
+
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      padding-right: 40px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      background: var(--background-color);
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: var(--spacing-sm);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .history-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .btn.small {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-size: var(--font-size-xs);
+    }
+
+    .reply-item {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+      box-shadow: var(--shadow);
+      transition: all 0.2s ease;
+    }
+
+    .reply-item:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-1px);
+    }
+
+    .reply-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-sm);
+      flex-wrap: wrap;
+      gap: var(--spacing-xs);
+    }
+
+    .reply-time {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+
+    .reply-model {
+      font-size: var(--font-size-xs);
+      color: var(--primary-color);
+      font-weight: var(--font-weight-medium);
+      background: rgba(29, 155, 240, 0.1);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--border-radius-sm);
+    }
+
+    .reply-tokens {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      background: rgba(0, 0, 0, 0.05);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--border-radius-sm);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .reply-content {
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .reply-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .reply-action {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: var(--spacing-xs);
+      border-radius: var(--border-radius-sm);
+      transition: all 0.2s ease;
+    }
+
+    .reply-action:hover {
+      background: var(--background-color);
+      color: var(--primary-color);
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border-color);
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      text-align: center;
+      padding-top: var(--spacing-lg);
+      margin-top: auto;
+    }
+
+    .footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: var(--font-weight-medium);
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Dark Theme */
+    .dark-theme {
+      --background-color: #15202b;
+      --surface-color: #1e293b;
+      --border-color: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --gradient-surface: linear-gradient(135deg, var(--surface-color), #2d3748);
+    }
+
+    .dark-theme .stat-card {
+      background: var(--gradient-surface);
+      border-color: var(--border-color);
+    }
+
+    .dark-theme .chart-container,
+    .dark-theme .reply-item {
+      background: var(--surface-color);
+      border-color: var(--border-color);
+    }
+
+    .dark-theme .period-btn {
+      background: var(--surface-color);
+      border-color: var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .dark-theme .period-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .dark-theme .reply-content {
+      color: var(--text-primary);
+    }
+
+    .dark-theme .footer {
+      border-color: var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding: var(--spacing-md);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .token-stats {
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .token-stat {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>
+      <img src="icons/icon128.png" alt="X Reply AI Logo" class="logo">
+      Dashboard
+    </h1>
+    <p class="subtitle">Your AI Reply Statistics & History</p>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-icon">💬</span>
+      <span class="stat-value" id="dailyReplies">0</span>
+      <span class="stat-label">Replies Today</span>
+      <span class="stat-period">Daily Total</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon">📊</span>
+      <span class="stat-value" id="monthlyReplies">0</span>
+      <span class="stat-label">Replies This Month</span>
+      <span class="stat-period">Monthly Total</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon">⚡</span>
+      <span class="stat-value" id="dailyTokens">0</span>
+      <span class="stat-label">Tokens Today</span>
+      <span class="stat-period">Daily Usage</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-icon">🔥</span>
+      <span class="stat-value" id="monthlyTokens">0</span>
+      <span class="stat-label">Tokens This Month</span>
+      <span class="stat-period">Monthly Usage</span>
+    </div>
+  </div>
+
+  <!-- Reply History -->
+  <section class="history-section">
+    <h2 class="section-title">
+      <span>📝</span>
+      Recent Replies
+    </h2>
+
+    <div class="history-controls">
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search replies..." class="search-input">
+        <span class="search-icon">🔍</span>
+      </div>
+      <div class="history-actions">
+        <button id="exportData" class="btn secondary small">📤 Export</button>
+        <button id="loadMore" class="btn secondary small">Load More</button>
+      </div>
+    </div>
+
+    <div id="replyHistory">
+      <div class="empty-state">
+        <span class="empty-icon">📝</span>
+        <div class="empty-title">No replies yet</div>
+        <div class="empty-description">
+          Your generated replies will appear here. Start replying to tweets to see your history!
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Dashboard data updates automatically •
+       <a href="#" id="clearData">Clear All Data</a>
+    </p>
+  </footer>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

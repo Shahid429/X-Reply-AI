@@ -1,0 +1,157 @@
+/* Modern style for the AI Reply button */
+.ai-reply-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: 12px;
+  border-radius: 9999px;
+  background-color: rgba(239, 243, 244, 0);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  backdrop-filter: blur(4px);
+  position: relative;
+  left: -35px;
+}
+
+.ai-reply-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: brightness(0.85);
+  transition: all 0.2s ease;
+}
+
+.ai-reply-btn:hover {
+  background-color: rgba(0, 0, 0, 0.831);
+  border-color: rgba(29, 156, 240, 0.034);
+  transform: scale(1.05);
+}
+
+.ai-reply-btn:hover img {
+  filter: brightness(1);
+}
+
+.ai-reply-btn:active {
+  transform: scale(0.95);
+  background-color: rgba(239, 243, 244, 0.15);
+}
+
+/* Loading state */
+.ai-reply-btn.ai-reply-btn-loading {
+  pointer-events: none;
+}
+
+.ai-reply-btn.ai-reply-btn-loading img {
+  opacity: 0;
+}
+
+.ai-reply-btn.ai-reply-btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d2e3ed;
+  box-shadow: 0 0 0 0 rgba(199, 222, 238, 0.4);
+  animation: ai-reply-pulse 1s infinite;
+}
+
+@keyframes ai-reply-pulse {
+  100% { box-shadow: 0 0 0 20px rgba(29, 155, 240, 0); }
+}
+
+@keyframes ai-reply-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Dark mode support */
+[data-theme="dim"],
+[data-theme="dark"] {
+  .ai-reply-btn {
+    color: #f7f9f9;
+  }
+}
+
+/* Make button more compact on mobile */
+@media (max-width: 688px) {
+  .ai-reply-btn {
+    width: 28px;
+    height: 28px;
+    margin-left: 8px;
+  }
+  
+  .ai-reply-btn img {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Notification styles for dashboard */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4CAF50;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  max-width: 300px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification.error {
+  background: #f44336;
+}
+
+.notification.success {
+  background: #4CAF50;
+}
+
+.notification.info {
+  background: #2196F3;
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAHZEEB - Options</title>
+  <style>
+    :root {
+      --primary-color: #1d9bf0;
+      --primary-hover: #1a91da;
+      --secondary-color: #536471;
+      --success-color: #00ba7c;
+      --warning-color: #f7b928;
+      --error-color: #f4212e;
+      --background-color: #ffffff;
+      --surface-color: #fafafa;
+      --border-color: #e6ecf0;
+      --text-primary: #0f1419;
+      --text-secondary: #536471;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 16px;
+      --spacing-xl: 20px;
+      --spacing-2xl: 24px;
+      --font-size-xs: 12px;
+      --font-size-sm: 13px;
+      --font-size-base: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 18px;
+      --font-size-2xl: 20px;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 480px;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.5;
+      background: var(--background-color);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body {
+      padding: var(--spacing-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xl);
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--border-radius-sm);
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      margin: 0;
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+    }
+
+    .subtitle {
+      margin: var(--spacing-xs) 0 0 0;
+      font-size: var(--font-size-sm);
+      opacity: 0.9;
+      font-weight: var(--font-weight-normal);
+    }
+
+    .version-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--border-radius-sm);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+    }
+
+    /* Dashboard */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .dashboard-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-icon {
+      font-size: var(--font-size-2xl);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-color);
+      color: white;
+      border-radius: var(--border-radius);
+    }
+
+    .card-content h3 {
+      margin: 0 0 var(--spacing-xs) 0;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+    }
+
+    .card-content p {
+      margin: 0;
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--surface-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-xs);
+      margin-bottom: var(--spacing-lg);
+      border: 1px solid var(--border-color);
+    }
+
+    .tab {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--border-radius-sm);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab:hover {
+      background: var(--background-color);
+      color: var(--text-primary);
+    }
+
+    .tab.active {
+      background: var(--primary-color);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .tab-content {
+      min-height: 400px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Header */
+    h1 {
+      font-size: var(--font-size-2xl);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--text-primary);
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: var(--font-size-2xl);
+    }
+
+    /* Sections */
+    .section {
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      background: var(--surface-color);
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .section:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .section-title {
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-lg);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .section-icon {
+      font-size: var(--font-size-lg);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+    }
+
+    input[type="password"], textarea, select {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      font-size: var(--font-size-base);
+      background: var(--background-color);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    input[type="password"]:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: pre-wrap;
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+
+    .help-text {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      margin-top: var(--spacing-xs);
+      line-height: 1.4;
+    }
+
+    .help-text a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: var(--font-weight-medium);
+    }
+
+    .help-text a:hover {
+      text-decoration: underline;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: none;
+      border-radius: var(--border-radius-sm);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      text-decoration: none;
+      margin-right: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .btn.primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn.secondary {
+      background-color: var(--surface-color);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn.secondary:hover {
+      background-color: var(--background-color);
+      border-color: var(--primary-color);
+    }
+
+    .btn.danger {
+      background-color: var(--error-color);
+      color: white;
+    }
+
+    .btn.danger:hover {
+      background-color: #d32f2f;
+    }
+
+    .btn.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .btn {
+      background-color: #1d9bf0;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 2px 5px rgba(29, 155, 240, 0.3);
+      transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+      background-color: #1a8cd8;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      background-color: #0e7bc4;
+      transform: translateY(0);
+    }
+
+    .btn.secondary {
+      background-color: #6c757d;
+      box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn.secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .btn.secondary:active {
+      background-color: #545b62;
+    }
+
+    .help-text {
+      font-size: 14px;
+      color: #6c757d;
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
+    #status {
+      margin-top: var(--spacing-lg);
+      padding: var(--spacing-md);
+      border-radius: var(--border-radius-sm);
+      font-size: var(--font-size-sm);
+      display: none;
+      word-wrap: break-word;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .success {
+      background-color: rgba(0, 186, 124, 0.1);
+      color: var(--success-color);
+      border-color: rgba(0, 186, 124, 0.2);
+    }
+
+    .error {
+      background-color: rgba(244, 33, 46, 0.1);
+      color: var(--error-color);
+      border-color: rgba(244, 33, 46, 0.2);
+    }
+
+    .info {
+      background-color: rgba(247, 185, 40, 0.1);
+      color: var(--warning-color);
+      border-color: rgba(247, 185, 40, 0.2);
+    }
+
+    .footer {
+      border-top: 1px solid var(--border-color);
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      text-align: center;
+      padding-top: var(--spacing-lg);
+      margin-top: var(--spacing-xl);
+    }
+
+    .footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: var(--font-weight-medium);
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+      .section {
+        padding: 12px;
+      }
+      h1 {
+        font-size: 18px;
+      }
+    }
+
+    /* Notification Styles */
+    .notification {
+      position: relative;
+      background: linear-gradient(135deg, #1da1f2, #0d8ddb);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(29, 161, 242, 0.3);
+      animation: slideDown 0.3s ease-out;
+      z-index: 1000;
+    }
+
+    .notification-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .notification-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .notification-close:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .notification {
+        padding: 12px 16px;
+        margin-bottom: 16px;
+      }
+      .notification-content {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Notification Banner -->
+  <div id="notification" class="notification" style="display: none;">
+    <div class="notification-content">
+      <span id="notification-text"></span>
+      <button id="notification-close" class="notification-close">&times;</button>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="header-content">
+      <div class="header-left">
+        <img src="icons/icon128.png" alt="TAHZEEB Logo" class="logo">
+        <div class="header-text">
+          <h1>TAHZEEB</h1>
+          <p class="subtitle">AI-Powered Twitter Replies</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="version-badge">v1.0.0</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Overview -->
+  <div class="dashboard">
+    <div class="dashboard-card">
+      <div class="card-icon">🔑</div>
+      <div class="card-content">
+        <h3>API Status</h3>
+        <p id="apiStatus">Checking...</p>
+      </div>
+    </div>
+    <div class="dashboard-card">
+      <div class="card-icon">⚙️</div>
+      <div class="card-content">
+        <h3>Configuration</h3>
+        <p id="configStatus">Ready to configure</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="api">API Keys</button>
+    <button class="tab" data-tab="models">AI Models</button>
+    <button class="tab" data-tab="style">Reply Style</button>
+  </nav>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- API Keys Tab -->
+    <div id="api-tab" class="tab-pane active">
+      <div class="section">
+        <div class="section-title"><span class="section-icon">🔑</span> API Keys</div>
+    <div class="form-group">
+      <label for="geminiKeys">Gemini API Keys (one per line)</label>
+      <textarea id="geminiKeys" placeholder="AIzaSy...\nAIzaSy..."></textarea>
+      <p class="help-text">We’ll try keys in order. Only sent to Google's Gemini API when generating replies. <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get your API key</a></p>
+    </div>
+    <div class="form-group">
+      <label for="openaiKeys">OpenAI API Keys (one per line)</label>
+      <textarea id="openaiKeys" placeholder="sk-...\nsk-..."></textarea>
+      <p class="help-text">Used with Chat Completions. We recommend a cost-effective model like gpt-4o-mini.</p>
+    </div>
+    <div class="form-group">
+      <label for="perplexityKeys">Perplexity API Keys (one per line)</label>
+      <textarea id="perplexityKeys" placeholder="pplx-...\npplx-..."></textarea>
+      <p class="help-text">Uses Perplexity’s chat completions (sonar models).</p>
+    </div>
+      </div>
+    </div>
+
+    <!-- AI Models Tab -->
+    <div id="models-tab" class="tab-pane">
+      <div class="section">
+        <div class="section-title"><span class="section-icon">�</span> AI Models</div>
+    <div class="form-group">
+      <label for="geminiModel">Gemini Model</label>
+      <select id="geminiModel">
+        <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite</option>
+        <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="openaiModel">OpenAI Model</label>
+      <select id="openaiModel">
+        <option value="gpt-4o-mini">gpt-4o-mini</option>
+        <option value="gpt-4o">gpt-4o</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="perplexityModel">Perplexity Model</label>
+      <select id="perplexityModel">
+        <option value="sonar">sonar</option>
+        <option value="sonar-small">sonar-small</option>
+        <option value="sonar-large">sonar-large</option>
+      </select>
+    </div>
+      </div>
+    </div>
+
+    <!-- Reply Style Tab -->
+    <div id="style-tab" class="tab-pane">
+      <div class="section">
+        <div class="section-title"><span class="section-icon">🎭</span> Persona</div>
+    <div class="form-group">
+      <label for="persona">Custom Persona Prompt (optional)</label>
+      <textarea id="persona" placeholder="e.g., You are a witty, empathetic social media manager who crafts concise, human replies that align with my voice."></textarea>
+      <p class="help-text">This guides the AI role and style.</p>
+    </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="save" class="btn primary">Save Settings</button>
+
+  <div id="status"></div>
+
+  <div class="footer">
+    <p>Need help? <a href="#" id="helpLink">View documentation</a></p>
+    <p>Version 1.0.0</p>
+  </div>
+
+  <script src="prompts.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
