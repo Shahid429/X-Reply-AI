@@ -71,8 +71,30 @@ jobs:
           path: release/
           retention-days: 30
 
+      - name: Commit release to repo folder
+        if: github.event_name != 'pull_request'
+        run: |
+          # Create releases folder if it doesn't exist
+          mkdir -p releases
+          
+          # Copy the archive to releases folder
+          cp release/*.zip releases/
+          
+          # Configure git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Add and commit the release file
+          git add releases/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add extension release: $(ls releases/*.zip | head -1 | xargs basename)"
+            git push
+          fi
+
       - name: Upload release archive (tagged)
-        if: success() && github.event_name == 'release'
+        if: github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: x-reply-ai-release-${{ github.event.release.tag_name }}
@@ -80,7 +102,7 @@ jobs:
           retention-days: 90
 
       - name: Upload release assets
-        if: success() && github.event_name == 'release'
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
           files: release/X-Reply-AI-v${{ github.event.release.tag_name }}.zip
