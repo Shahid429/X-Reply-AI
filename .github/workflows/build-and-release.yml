@@ -2,90 +2,70 @@ name: Build and Release X Reply AI
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'  # Run when you push a tag like v1.3.1
   workflow_dispatch: {}
-  release:
-    types: [created]
 
 permissions:
-  contents: write  # ✅ required for uploading assets and creating releases
+  contents: write
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
 
     steps:
-      # 🧩 Checkout source code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ⚙️ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
 
-      # 📦 Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # ✅ Lint the project
       - name: Lint code
         run: npm run lint
 
-      # 🏗️ Build extension
       - name: Build extension
         run: npm run prod
 
-      # 🔍 Verify build output
       - name: Verify build
         run: |
-          echo "Checking dist folder..."
           ls -la dist/
           if [ ! -f "dist/manifest.json" ]; then
-            echo "❌ Build failed: manifest.json not found"
+            echo "Build failed: manifest.json not found"
             exit 1
           fi
           if [ ! -f "dist/background.js" ]; then
-            echo "❌ Build failed: background.js not found"
+            echo "Build failed: background.js not found"
             exit 1
           fi
           echo "✅ Build verified successfully."
 
-      # 📦 Create release ZIP
       - name: Create release archive
         run: |
           mkdir -p release
           cd dist
-          zip -r ../release/X-Reply-AI-${{ github.event.release.tag_name || github.sha }}.zip .
+          zip -r ../release/X-Reply-AI-${{ github.ref_name }}.zip .
           cd ..
-          echo "Release archive created:"
           ls -la release/
 
-      # 💾 Upload build artifacts (always)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: x-reply-ai-build-${{ github.sha }}
+          name: x-reply-ai-build-${{ github.ref_name }}
           path: dist/
           retention-days: 30
 
-      # 💾 Upload release archive (always)
-      - name: Upload release archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: x-reply-ai-archive-${{ github.event.release.tag_name || github.sha }}
-          path: release/
-          retention-days: 90
-
-      # 🚀 Upload ZIP to GitHub Release (only when release event triggered)
-      - name: Upload release assets to GitHub Release
-        if: github.event_name == 'release'
+      - name: Create GitHub Release and Upload Asset
         uses: ncipollo/release-action@v1
         with:
-          artifacts: release/X-Reply-AI-${{ github.event.release.tag_name || github.sha }}.zip
+          tag: ${{ github.ref_name }}
+          name: "X Reply AI ${{ github.ref_name }}"
+          body: "Automated release for version ${{ github.ref_name }}"
+          artifacts: release/X-Reply-AI-${{ github.ref_name }}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
