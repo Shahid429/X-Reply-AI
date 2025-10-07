@@ -65,6 +65,13 @@ jobs:
           retention-days: 30
 
       - name: Upload release archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: x-reply-ai-archive-${{ github.sha }}
+          path: release/
+          retention-days: 30
+
+      - name: Upload release archive (tagged)
         if: success() && github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
