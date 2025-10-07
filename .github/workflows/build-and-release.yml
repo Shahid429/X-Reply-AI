@@ -12,6 +12,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,6 +52,7 @@ jobs:
           cd ..
           ls -la release/
 
+      # Upload build artifacts for all workflow runs
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -58,6 +60,7 @@ jobs:
           path: dist/
           retention-days: 30
 
+      # Upload release archive only on release event
       - name: Upload release archive
         if: github.event_name == 'release'
         uses: actions/upload-artifact@v4
@@ -66,6 +69,7 @@ jobs:
           path: release/
           retention-days: 90
 
+      # Upload release assets to GitHub Release on release event
       - name: Upload release assets
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
