@@ -127,7 +127,6 @@ jobs:
 
   # New job for creating GitHub releases
   create-release:
-    needs: build-and-test
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Allow creating releases
@@ -135,24 +134,49 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Download extension archive
-        uses: actions/download-artifact@v4
         with:
-          name: x-reply-ai-extension
-          path: release/
+          ref: ${{ github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run prod
+
+      - name: Create release archive
+        run: |
+          mkdir -p release
+          cd dist
+          
+          # For tags: use tag name (remove 'v' prefix if present)
+          TAG_NAME="${{ github.ref_name }}"
+          VERSION="${TAG_NAME#v}"  # Remove 'v' prefix
+          EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
+          
+          echo "Creating extension: $EXTENSION_NAME"
+          zip -r "../release/${EXTENSION_NAME}" .
+          cd ..
+          
+          echo "Created extension: ${EXTENSION_NAME}"
+          ls -la release/
 
       - name: Create GitHub Release
         run: |
-          # Remove 'v' prefix from tag name for filename
+          # Get the version for the filename
           TAG_NAME="${{ github.ref_name }}"
           VERSION="${TAG_NAME#v}"
           ZIP_FILE="release/X-Reply-AI-Extension-v${VERSION}.zip"
           
-          echo "Looking for ZIP file: $ZIP_FILE"
-          ls -la release/
+          echo "ZIP file: $ZIP_FILE"
+          ls -la $ZIP_FILE
           
-          # Create the release notes using heredoc
+          # Create the release notes
           cat << EOF > release_notes.md
           ## 🤖 X Reply AI Extension - ${{ github.ref_name }}
           
@@ -171,7 +195,8 @@ jobs:
           *This release was automatically created by GitHub Actions.*
           EOF
           
-          # Create the release using the gh CLI
+          # Create the release
+          echo "Creating release for tag: ${{ github.ref_name }}"
           gh release create "${{ github.ref_name }}" \
             --title "Release ${{ github.ref_name }}" \
             --notes-file release_notes.md \
