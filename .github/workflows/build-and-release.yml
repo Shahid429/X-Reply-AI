@@ -47,7 +47,13 @@ jobs:
         run: |
           mkdir -p release
           cd dist
-          zip -r ../release/X-Reply-AI-v${{ github.event.release.tag_name || 'latest' }}.zip .
+          # Use different naming based on event type
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+          else
+            VERSION="latest-${{ github.sha }}"
+          fi
+          zip -r ../release/X-Reply-AI-v${VERSION}.zip .
           cd ..
           ls -la release/
 
