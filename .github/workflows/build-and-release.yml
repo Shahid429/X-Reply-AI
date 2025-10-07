@@ -18,6 +18,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # For releases, checkout the main branch instead of detached HEAD
+          ref: ${{ github.event_name == 'release' && 'main' || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,7 +35,7 @@ jobs:
         run: npm run lint
 
       - name: Build extension
-        run: npm prod
+        run: npm run prod
 
       - name: Verify build
         run: |
@@ -45,13 +48,21 @@ jobs:
             echo "Build failed: background.js not found"
             exit 1
           fi
+
       - name: Create release archive
         id: create-archive
         run: |
           mkdir -p release
           cd dist
           
+          echo "Current directory: $(pwd)"
+          echo "Files in dist: $(ls -la)"
+          
           # Determine version based on trigger type
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             # For tags: use tag name (remove 'v' prefix if present)
             TAG_NAME="${GITHUB_REF_NAME}"
@@ -65,12 +76,20 @@ jobs:
           
           EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
           echo "Creating extension: $EXTENSION_NAME"
+          
+          # Check if zip command exists
+          which zip || echo "zip command not found"
+          
           zip -r "../release/${EXTENSION_NAME}" .
+          ZIP_RESULT=$?
+          echo "Zip command exit code: $ZIP_RESULT"
+          
           cd ..
           
           echo "Created extension: ${EXTENSION_NAME}"
           echo "extension-name=${EXTENSION_NAME}" >> $GITHUB_OUTPUT
           ls -la release/
+
       - name: Upload extension archive
         uses: actions/upload-artifact@v4
         with:
@@ -105,9 +124,9 @@ jobs:
             git commit -m "🤖 Add extension release: ${NEW_FILE}" || echo "Commit failed, possibly due to conflicts"
             git push origin main || echo "Push failed, but build artifacts are still available"
           fi
+
   # New job for creating GitHub releases
   create-release:
-    needs: build-and-test
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Allow creating releases
@@ -115,36 +134,72 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Download extension archive
-        uses: actions/download-artifact@v4
         with:
-          name: x-reply-ai-extension
-          path: release/
+          ref: ${{ github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run prod
+
+      - name: Create release archive
+        run: |
+          mkdir -p release
+          cd dist
+          
+          # For tags: use tag name (remove 'v' prefix if present)
+          TAG_NAME="${{ github.ref_name }}"
+          VERSION="${TAG_NAME#v}"  # Remove 'v' prefix
+          EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
+          
+          echo "Creating extension: $EXTENSION_NAME"
+          zip -r "../release/${EXTENSION_NAME}" .
+          cd ..
+          
+          echo "Created extension: ${EXTENSION_NAME}"
+          ls -la release/
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: "Release ${{ github.ref_name }}"
-          body: |
-            ## 🤖 X Reply AI Extension - ${{ github.ref_name }}
-            
-            **Automatic release created from commit:** `${{ github.sha }}`
-            
-            ### 📦 Downloads
-            - **Extension ZIP**: Download the attached `X-Reply-AI-Extension-${{ github.ref_name }}.zip` file
-            - **Install**: Unzip and load as unpacked extension in Chrome Developer Mode
-            
-            ### 🔧 Build Details
-            - **Commit**: ${{ github.sha }}
-            - **Build Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
-            - **Workflow**: ${{ github.workflow }}
-            
-            ---
-            *This release was automatically created by GitHub Actions.*
-          files: release/X-Reply-AI-Extension-${{ github.ref_name }}.zip
-          draft: false
-          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'rc') }}
+        run: |
+          # Get the version for the filename
+          TAG_NAME="${{ github.ref_name }}"
+          VERSION="${TAG_NAME#v}"
+          ZIP_FILE="release/X-Reply-AI-Extension-v${VERSION}.zip"
+          
+          echo "ZIP file: $ZIP_FILE"
+          ls -la $ZIP_FILE
+          
+          # Create the release notes
+          cat << EOF > release_notes.md
+          ## 🤖 X Reply AI Extension - ${{ github.ref_name }}
+          
+          **Automatic release created from commit:** \`${{ github.sha }}\`
+          
+          ### 📦 Downloads
+          - **Extension ZIP**: Download the attached \`X-Reply-AI-Extension-v${VERSION}.zip\` file
+          - **Install**: Unzip and load as unpacked extension in Chrome Developer Mode
+          
+          ### 🔧 Build Details
+          - **Commit**: ${{ github.sha }}
+          - **Build Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          - **Workflow**: ${{ github.workflow }}
+          
+          ---
+          *This release was automatically created by GitHub Actions.*
+          EOF
+          
+          # Create the release
+          echo "Creating release for tag: ${{ github.ref_name }}"
+          gh release create "${{ github.ref_name }}" \
+            --title "Release ${{ github.ref_name }}" \
+            --notes-file release_notes.md \
+            "$ZIP_FILE"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
