@@ -9,6 +9,11 @@ lerna-debug.log*
 # Development files
 archive_root_duplicates/
 
+# Build outputs (keep releases!)
+dist/
+release/
+# releases/  <- Keep this tracked for permanent storage
+
 # Environment variables
 .env
 .env.local

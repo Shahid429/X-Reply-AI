@@ -12,9 +12,14 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allow pushing to repository
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # For releases, checkout the main branch instead of detached HEAD
+          ref: ${{ github.event_name == 'release' && 'main' || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -81,16 +86,16 @@ jobs:
           cp release/*.zip releases/
           
           # Configure git
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           
           # Add and commit the release file
           git add releases/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Add extension release: $(ls releases/*.zip | head -1 | xargs basename)"
-            git push
+            git commit -m "🤖 Add extension release: $(ls releases/*.zip | head -1 | xargs basename)" || echo "Commit failed, possibly due to conflicts"
+            git push origin main || echo "Push failed, but build artifacts are still available"
           fi
 
       - name: Upload release archive (tagged)
