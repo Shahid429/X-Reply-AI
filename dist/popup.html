@@ -509,6 +509,71 @@
     .dark-theme .footer {
       border-color: var(--border-color);
     }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 480px) {
+      body {
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+        padding: var(--spacing-md);
+        min-height: auto;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        text-align: center;
+      }
+
+      .header-left {
+        justify-content: center;
+      }
+
+      h1 {
+        font-size: var(--font-size-lg);
+      }
+
+      .preset-cards {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .preset-card {
+        padding: var(--spacing-lg);
+      }
+
+      .preset-icon {
+        font-size: var(--font-size-2xl);
+      }
+
+      .preset-name {
+        font-size: var(--font-size-base);
+      }
+
+      .preset-desc {
+        font-size: var(--font-size-sm);
+      }
+
+      .btn {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+      }
+
+      .status {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-xs);
+      }
+
+      .footer {
+        font-size: var(--font-size-xs);
+        padding-top: var(--spacing-md);
+      }
+
+      .footer-credit {
+        font-size: var(--font-size-sm);
+      }
+    }
   </style>
 </head>
 <body>
@@ -582,7 +647,7 @@
   <div class="footer">
     <p class="footer-credit">
       Made with ❤️ by 
-      <a href="https://x.com/oggii_0.com" target="_blank" class="footer-link">SHAHID</a>
+      <a href="https://x.com/oggii_0" target="_blank" class="footer-link">SHAHID</a>
     </p>
     <div class="version" id="version">v1.0.0</div>
   </div>

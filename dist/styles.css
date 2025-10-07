@@ -1,4 +1,4 @@
-/* Modern style for the AI Reply button */
+/* AI Button Styles */
 .ai-reply-btn {
   display: inline-flex;
   align-items: center;
@@ -41,7 +41,6 @@
   background-color: rgba(239, 243, 244, 0.15);
 }
 
-/* Loading state */
 .ai-reply-btn.ai-reply-btn-loading {
   pointer-events: none;
 }
@@ -65,29 +64,22 @@
   100% { box-shadow: 0 0 0 20px rgba(29, 155, 240, 0); }
 }
 
-@keyframes ai-reply-spin {
-  to { transform: rotate(360deg); }
+[data-theme="dim"] .ai-reply-btn,
+[data-theme="dark"] .ai-reply-btn {
+  color: #f7f9f9;
 }
 
-/* Dark mode support */
-[data-theme="dim"],
-[data-theme="dark"] {
-  .ai-reply-btn {
-    color: #f7f9f9;
-  }
-}
-
-/* Make button more compact on mobile */
 @media (max-width: 688px) {
   .ai-reply-btn {
-    width: 28px;
-    height: 28px;
-    margin-left: 8px;
+    width: 34px;
+    height: 34px;
+    
+    left: -15px;
   }
   
   .ai-reply-btn img {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
   }
 }
 
