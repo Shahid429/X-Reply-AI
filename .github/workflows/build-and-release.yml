@@ -48,46 +48,32 @@ jobs:
             echo "Build failed: background.js not found"
             exit 1
           fi
+
       - name: Create release archive
         id: create-archive
         run: |
           mkdir -p release
           cd dist
           
-          echo "Current directory: $(pwd)"
-          echo "Files in dist: $(ls -la)"
-          
           # Determine version based on trigger type
-          echo "GITHUB_REF: $GITHUB_REF"
-          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          
-          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             # For tags: use tag name (remove 'v' prefix if present)
-            TAG_NAME="${GITHUB_REF_NAME}"
+            TAG_NAME="${{ github.ref_name }}"
             VERSION="${TAG_NAME#v}"  # Remove 'v' prefix
-            echo "Building for tag: $TAG_NAME -> version: $VERSION"
           else
             # For pushes: use date and short commit hash
-            VERSION="$(date +%Y%m%d)-${GITHUB_SHA:0:7}"
-            echo "Building for push: version $VERSION"
+            VERSION="$(date +%Y%m%d)-${{ github.sha }}"
+            VERSION="${VERSION:0:15}"
           fi
           
           EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
-          echo "Creating extension: $EXTENSION_NAME"
-          
-          # Check if zip command exists
-          which zip || echo "zip command not found"
-          
           zip -r "../release/${EXTENSION_NAME}" .
-          ZIP_RESULT=$?
-          echo "Zip command exit code: $ZIP_RESULT"
-          
           cd ..
           
           echo "Created extension: ${EXTENSION_NAME}"
           echo "extension-name=${EXTENSION_NAME}" >> $GITHUB_OUTPUT
           ls -la release/
+
       - name: Upload extension archive
         uses: actions/upload-artifact@v4
         with:
@@ -122,6 +108,7 @@ jobs:
             git commit -m "🤖 Add extension release: ${NEW_FILE}" || echo "Commit failed, possibly due to conflicts"
             git push origin main || echo "Push failed, but build artifacts are still available"
           fi
+
   # New job for creating GitHub releases
   create-release:
     needs: build-and-test
