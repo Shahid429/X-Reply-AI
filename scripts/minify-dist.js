@@ -16,6 +16,13 @@ async function run() {
   for (const f of list) {
     await minifyFile(path.join(dir, f));
   }
+
+  // Remove source map files in production
+  const mapFiles = fs.readdirSync(dir).filter(f => f.endsWith('.js.map'));
+  for (const mapFile of mapFiles) {
+    fs.unlinkSync(path.join(dir, mapFile));
+    console.log('Removed', mapFile);
+  }
 }
 
 run().catch(e => { console.error(e); process.exit(1); });

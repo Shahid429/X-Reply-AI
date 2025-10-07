@@ -1,7 +1,7 @@
 /// <reference types="chrome"/>
 
-import { ExtensionConfig, fetchConfig } from './config.js';
-import { ApiProvider, withTimeoutFetch, callGemini, callOpenAI, callPerplexity } from './api.js';
+import { fetchConfig } from './config.js';
+import { ApiProvider, callGemini, callOpenAI, callPerplexity } from './api.js';
 import { isTransient, getSync, getLocal, setLocal } from './utils.js';
 
 chrome.runtime.onStartup.addListener(fetchConfig);
@@ -17,23 +17,33 @@ chrome.commands.onCommand.addListener(async (command: string) => {
     if (tab && tab.id) {
       chrome.tabs.sendMessage(tab.id, { type: 'trigger-generate-reply' });
     }
-  } catch (e) {
+  } catch {
     // ignore
   }
 });
 
-chrome.runtime.onMessage.addListener((msg: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
+interface GenMessage {
+  type: 'gen';
+  payload?: {
+    systemInstruction: string;
+    prompt: string;
+  };
+}
+
+chrome.runtime.onMessage.addListener((msg: GenMessage, sender: chrome.runtime.MessageSender, sendResponse: (response: { text?: string; error?: string }) => void) => {
   // Consolidated message handler: supports 'gen' (generate reply)
   if (!msg || msg.type !== 'gen') return;
   (async () => {
       try {
-        const { systemInstruction, prompt } = msg.payload || {};
+        const payload = msg.payload;
+        const systemInstruction = payload?.systemInstruction || '';
+        const prompt = payload?.prompt || '';
         const settings = await getSync(['geminiApiKeys', 'openaiApiKeys', 'perplexityApiKeys', 'geminiModel', 'openaiModel', 'perplexityModel']);
         const geminiKeys = Array.isArray(settings.geminiApiKeys) ? settings.geminiApiKeys : [];
         const openaiKeys = Array.isArray(settings.openaiApiKeys) ? settings.openaiApiKeys : [];
         const perplexityKeys = Array.isArray(settings.perplexityApiKeys) ? settings.perplexityApiKeys : [];
         if (!geminiKeys.length && !openaiKeys.length && !perplexityKeys.length) throw new Error('No API keys configured');
-        const geminiModel = settings.geminiModel || 'gemini-2.5-flash-lite';
+        const geminiModel = settings.geminiModel || 'gemini-1.5-flash';
         const openaiModel = settings.openaiModel || 'gpt-4o-mini';
         const perplexityModel = settings.perplexityModel || 'sonar';
 
@@ -54,14 +64,14 @@ chrome.runtime.onMessage.addListener((msg: any, sender: chrome.runtime.MessageSe
           for (let i = 0; i < p.keys.length; i++) {
             const key = p.keys[i];
             try {
-              const text = await p.fn(key, p.model, systemInstruction, prompt);
-              if (text && text.trim().length) {
+              const result = await p.fn(key, p.model, systemInstruction, prompt);
+              if (result.text && result.text.trim().length) {
                 setLocal({ lastWorkingProvider: p.name, lastWorkingKey: key });
 
                 // Track reply generation for dashboard
-                await trackReplyGeneration(text, p.name, p.model);
+                await trackReplyGeneration(result.text, p.name, p.model);
 
-                sendResponse({ text });
+                sendResponse({ text: result.text });
                 return;
               }
             } catch (e) {
@@ -109,14 +119,22 @@ async function trackReplyGeneration(replyText: string, provider: string, model: 
       stats.monthlyTokens = 0;
     }
 
-    const estimatedTokens = Math.ceil(replyText.length / 4);
+    // Estimate total tokens based on reply length
+    const totalTokens = Math.ceil(replyText.length / 4);
+
     stats.dailyReplies += 1;
     stats.monthlyReplies += 1;
-    stats.dailyTokens += estimatedTokens;
-    stats.monthlyTokens += estimatedTokens;
+    stats.dailyTokens += totalTokens;
+    stats.monthlyTokens += totalTokens;
     stats.lastUpdated = now;
 
-    const entry = { id: now.toString(), content: replyText, timestamp: now, model: `${provider}/${model}`, tokens: estimatedTokens };
+    const entry = {
+      id: now.toString(),
+      content: replyText,
+      timestamp: now,
+      model: `${provider}/${model}`,
+      tokens: totalTokens
+    };
     history.push(entry);
     if (history.length > 100) history.shift();
 

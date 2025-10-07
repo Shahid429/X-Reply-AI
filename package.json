@@ -3,25 +3,31 @@
   "version": "1.0.0",
   "description": "Chrome extension for AI-powered replies on X (Twitter)",
   "scripts": {
-  "build": "tsc && npm run copy-files",
-  "prepare": "npm run build",
-  "release": "powershell -Command \"New-Item -ItemType Directory -Force release; Compress-Archive -Path .\\dist\\* -DestinationPath .\\release\\TAHZEEB-dist.zip -Force\"",
-  "build:prod": "npm run build && npm run minify-dist",
-  "minify-dist": "node scripts/minify-dist.js",
-    "watch": "tsc --watch",
+    "build": "npm run build:dev",
+    "build:dev": "tsc --sourceMap && npm run copy-files && npm run manifest:dev",
+    "build:prod": "tsc && npm run copy-files && npm run manifest:prod && npm run minify-dist",
+    "start": "npm run build && npm run open-chrome && npm run watch",
+    "open-chrome": "start chrome chrome://extensions/",
+    "dev": "npm run build && npm run watch",
+    "watch": "tsc --watch --sourceMap",
+    "prod": "npm run build:prod",
+    "release": "npm run prod && powershell -Command \"New-Item -ItemType Directory -Force release; Compress-Archive -Path .\\dist\\* -DestinationPath .\\release\\X-Reply-AI.zip -Force\"",
+    "manifest:dev": "node scripts/manifest-dev.js",
+    "manifest:prod": "node scripts/manifest-prod.js",
+    "minify-dist": "node scripts/minify-dist.js",
+    "copy-files": "cpy manifest.json dist/ && cpy \"archive_root_duplicates/*.{html,js,css}\" dist/ && cpy \"archive_root_duplicates/icons/**\" dist/icons/ && cpy \"archive_root_duplicates/images/**\" dist/images/",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
-    "format": "prettier --write src/**/*.ts",
-  "copy-files": "cpy manifest.json dist/"
+    "format": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-  "cpy-cli": "^5.0.0",
-  "terser": "^5.20.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "cpy-cli": "^5.0.0",
     "eslint": "^8.0.0",
     "prettier": "^3.0.0",
+    "terser": "^5.20.0",
     "typescript": "^5.0.0"
   }
 }

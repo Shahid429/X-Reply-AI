@@ -14,10 +14,10 @@ export function getSync(keys: string[]): Promise<Record<string, any>> {
 
 export function getLocal(keys: string[]): Promise<Record<string, any>> {
   return new Promise((resolve) => {
-    try { chrome.storage.local.get(keys, (res: any) => resolve(res || {})); } catch { resolve({}); }
+    try { chrome.storage.local.get(keys, (res: any) => resolve(res || {})); } catch { resolve({}); } // eslint-disable-line no-empty
   });
 }
 
 export function setLocal(obj: Record<string, any>): void {
-  try { chrome.storage.local.set(obj); } catch {}
+  try { chrome.storage.local.set(obj); } catch {} // eslint-disable-line no-empty
 }

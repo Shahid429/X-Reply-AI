@@ -8,7 +8,7 @@ export interface ExtensionConfig {
   message: string;
 }
 
-export const CONFIG_URL = 'https://shahid429.github.io/tahzeeb-config/config.json';
+export const CONFIG_URL = 'https://shahid429.github.io/x-reply-ai-config/config.json';
 
 export async function fetchConfig(): Promise<void> {
   try {
@@ -24,5 +24,5 @@ export async function fetchConfig(): Promise<void> {
 }
 
 function setLocal(obj: Record<string, any>): void {
-  try { chrome.storage.local.set(obj); } catch {}
+  try { chrome.storage.local.set(obj); } catch {} // eslint-disable-line no-empty
 }

@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TAHZEEB",
+  "name": "X Reply AI",
   "version": "1.0.0",
   "description": "Generate AI-powered replies for X (Twitter) posts",
   "permissions": [
