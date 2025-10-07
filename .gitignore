@@ -9,8 +9,6 @@ lerna-debug.log*
 # Build outputs
 dist/
 build/
-release/
-*.zip
 
 # Development files
 archive_root_duplicates/
