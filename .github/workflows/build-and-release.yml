@@ -3,7 +3,6 @@ name: Build and Release X Reply AI
 on:
   push:
     branches: [ main ]
-    tags: [ 'v*' ]  # Trigger on version tags like v1.0.0, v2.1.3, etc.
   pull_request:
     branches: [ main ]
   workflow_dispatch: {}
@@ -11,16 +10,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Allow pushing to repository
-    outputs:
-      extension-name: ${{ steps.create-archive.outputs.extension-name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          # For releases, checkout the main branch instead of detached HEAD
-          ref: ${{ github.event_name == 'release' && 'main' || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -49,93 +41,14 @@ jobs:
             exit 1
           fi
 
-      - name: Create release archive
-        id: create-archive
-        run: |
-          mkdir -p release
-          cd dist
-          
-          echo "Current directory: $(pwd)"
-          echo "Files in dist: $(ls -la)"
-          
-          # Determine version based on trigger type
-          echo "GITHUB_REF: $GITHUB_REF"
-          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          
-          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
-            # For tags: use tag name (remove 'v' prefix if present)
-            TAG_NAME="${GITHUB_REF_NAME}"
-            VERSION="${TAG_NAME#v}"  # Remove 'v' prefix
-            echo "Building for tag: $TAG_NAME -> version: $VERSION"
-          else
-            # For pushes: use date and short commit hash
-            VERSION="$(date +%Y%m%d)-${GITHUB_SHA:0:7}"
-            echo "Building for push: version $VERSION"
-          fi
-          
-          EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
-          echo "Creating extension: $EXTENSION_NAME"
-          
-          # Check if zip command exists
-          which zip || echo "zip command not found"
-          
-          zip -r "../release/${EXTENSION_NAME}" .
-          ZIP_RESULT=$?
-          echo "Zip command exit code: $ZIP_RESULT"
-          
-          cd ..
-          
-          echo "Created extension: ${EXTENSION_NAME}"
-          echo "extension-name=${EXTENSION_NAME}" >> $GITHUB_OUTPUT
-          ls -la release/
-
-      - name: Upload extension archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: x-reply-ai-extension
-          path: release/
-          retention-days: 30
-
-      - name: Commit release to repo folder
-        if: github.event_name != 'pull_request'
-        run: |
-          # Create releases folder if it doesn't exist
-          mkdir -p releases
-          
-          # Clean up old releases (keep only the latest)
-          cd releases
-          rm -f *.zip
-          cd ..
-          
-          # Copy the new archive to releases folder
-          cp release/*.zip releases/
-          
-          # Configure git
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          
-          # Add and commit the release file
-          git add releases/
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            NEW_FILE=$(ls releases/*.zip | head -1 | xargs basename)
-            git commit -m "🤖 Add extension release: ${NEW_FILE}" || echo "Commit failed, possibly due to conflicts"
-            git push origin main || echo "Push failed, but build artifacts are still available"
-          fi
-
-  # New job for creating GitHub releases
-  create-release:
+  release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Allow creating releases
+      contents: write
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -153,52 +66,69 @@ jobs:
         run: |
           mkdir -p release
           cd dist
-          
-          # For tags: use tag name (remove 'v' prefix if present)
-          TAG_NAME="${{ github.ref_name }}"
-          VERSION="${TAG_NAME#v}"  # Remove 'v' prefix
-          EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
-          
-          echo "Creating extension: $EXTENSION_NAME"
-          zip -r "../release/${EXTENSION_NAME}" .
+
+          # Get version from tag (remove 'v' prefix)
+          VERSION="${GITHUB_REF_NAME#v}"
+          ZIP_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
+
+          echo "Creating: $ZIP_NAME"
+          zip -r "../release/$ZIP_NAME" .
           cd ..
-          
-          echo "Created extension: ${EXTENSION_NAME}"
+
+          echo "Created: $ZIP_NAME"
           ls -la release/
+
+      - name: Commit to releases folder
+        run: |
+          mkdir -p releases
+
+          # Clean up old releases (keep only latest)
+          cd releases
+          rm -f *.zip
+          cd ..
+
+          # Copy new release
+          cp release/*.zip releases/
+
+          # Commit
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add releases/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            NEW_FILE=$(ls releases/*.zip | head -1 | xargs basename)
+            git commit -m "🤖 Add extension release: $NEW_FILE"
+            git push origin main
+          fi
 
       - name: Create GitHub Release
         run: |
-          # Get the version for the filename
-          TAG_NAME="${{ github.ref_name }}"
-          VERSION="${TAG_NAME#v}"
+          VERSION="${GITHUB_REF_NAME#v}"
           ZIP_FILE="release/X-Reply-AI-Extension-v${VERSION}.zip"
-          
-          echo "ZIP file: $ZIP_FILE"
-          ls -la $ZIP_FILE
-          
-          # Create the release notes
+
+          # Create release notes
           cat << EOF > release_notes.md
-          ## 🤖 X Reply AI Extension - ${{ github.ref_name }}
-          
-          **Automatic release created from commit:** \`${{ github.sha }}\`
-          
+          ## 🤖 X Reply AI Extension - ${GITHUB_REF_NAME}
+
+          **Automatic release created from commit:** \`${GITHUB_SHA}\`
+
           ### 📦 Downloads
           - **Extension ZIP**: Download the attached \`X-Reply-AI-Extension-v${VERSION}.zip\` file
           - **Install**: Unzip and load as unpacked extension in Chrome Developer Mode
-          
+
           ### 🔧 Build Details
-          - **Commit**: ${{ github.sha }}
+          - **Commit**: ${GITHUB_SHA}
           - **Build Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          - **Workflow**: ${{ github.workflow }}
-          
+          - **Workflow**: ${GITHUB_WORKFLOW}
+
           ---
           *This release was automatically created by GitHub Actions.*
           EOF
-          
-          # Create the release
-          echo "Creating release for tag: ${{ github.ref_name }}"
-          gh release create "${{ github.ref_name }}" \
-            --title "Release ${{ github.ref_name }}" \
+
+          # Create release
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Release ${GITHUB_REF_NAME}" \
             --notes-file release_notes.md \
             "$ZIP_FILE"
         env:
