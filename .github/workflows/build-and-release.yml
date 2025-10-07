@@ -94,13 +94,17 @@ jobs:
           # Commit
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          
+          # Fetch main branch to handle detached HEAD
+          git fetch origin main
+          
           git add releases/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
             NEW_FILE=$(ls releases/*.zip | head -1 | xargs basename)
             git commit -m "🤖 Add extension release: $NEW_FILE"
-            git push origin main
+            git push origin main:main
           fi
 
       - name: Create GitHub Release
