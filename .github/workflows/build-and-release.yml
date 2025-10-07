@@ -48,32 +48,32 @@ jobs:
         run: |
           mkdir -p release
           cd dist
-          zip -r ../release/X-Reply-AI-v${{ github.event.release.tag_name || 'latest' }}.zip .
+          zip -r ../release/X-Reply-AI-v${{ github.event.release.tag_name || github.sha }}.zip .
           cd ..
           ls -la release/
 
-      # Upload build artifacts for all workflow runs
+      # Always upload build artifacts for CI visibility
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: x-reply-ai-extension-${{ github.sha }}
+          name: x-reply-ai-build-${{ github.sha }}
           path: dist/
           retention-days: 30
 
-      # Upload release archive only on release event
+      # Always upload ZIP archive for convenience
       - name: Upload release archive
-        if: github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: x-reply-ai-release-${{ github.event.release.tag_name }}
+          name: x-reply-ai-archive-${{ github.event.release.tag_name || github.sha }}
           path: release/
           retention-days: 90
 
-      # Upload release assets to GitHub Release on release event
-      - name: Upload release assets
+      # Only attach ZIP to GitHub release when triggered by a release event
+      - name: Upload release assets to GitHub Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
           files: release/X-Reply-AI-v${{ github.event.release.tag_name }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
