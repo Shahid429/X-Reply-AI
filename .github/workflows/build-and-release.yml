@@ -79,9 +79,9 @@ jobs:
           # Create releases folder if it doesn't exist
           mkdir -p releases
           
-          # Clean up old releases (keep only latest 5)
+          # Clean up old releases (keep only the latest)
           cd releases
-          ls -t *.zip 2>/dev/null | tail -n +6 | xargs -r rm -f
+          rm -f *.zip
           cd ..
           
           # Copy the new archive to releases folder
