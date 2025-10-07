@@ -3,17 +3,18 @@ name: Build and Release X Reply AI
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]  # Trigger on version tags like v1.0.0, v2.1.3, etc.
   pull_request:
     branches: [ main ]
   workflow_dispatch: {}
-  release:
-    types: [created]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Allow pushing to repository
+    outputs:
+      extension-name: ${{ steps.create-archive.outputs.extension-name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,21 +50,28 @@ jobs:
           fi
 
       - name: Create release archive
+        id: create-archive
         run: |
           mkdir -p release
           cd dist
-          # Use different naming based on event type
-          if [ "${{ github.event_name }}" = "release" ]; then
-            VERSION="${{ github.event.release.tag_name }}"
+          
+          # Determine version based on trigger type
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            # For tags: use tag name (remove 'v' prefix if present)
+            TAG_NAME="${{ github.ref_name }}"
+            VERSION="${TAG_NAME#v}"  # Remove 'v' prefix
           else
-            # Use date and short commit hash for development builds
+            # For pushes: use date and short commit hash
             VERSION="$(date +%Y%m%d)-${{ github.sha }}"
-            VERSION="${VERSION:0:15}"  # Truncate to reasonable length
+            VERSION="${VERSION:0:15}"
           fi
+          
           EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
           zip -r "../release/${EXTENSION_NAME}" .
           cd ..
+          
           echo "Created extension: ${EXTENSION_NAME}"
+          echo "extension-name=${EXTENSION_NAME}" >> $GITHUB_OUTPUT
           ls -la release/
 
       - name: Upload extension archive
@@ -101,18 +109,46 @@ jobs:
             git push origin main || echo "Push failed, but build artifacts are still available"
           fi
 
-      - name: Upload release archive (tagged)
-        if: github.event_name == 'release'
-        uses: actions/upload-artifact@v4
-        with:
-          name: x-reply-ai-release-${{ github.event.release.tag_name }}
-          path: release/
-          retention-days: 90
+  # New job for creating GitHub releases
+  create-release:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allow creating releases
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Upload release assets
-        if: github.event_name == 'release'
+      - name: Download extension archive
+        uses: actions/download-artifact@v4
+        with:
+          name: x-reply-ai-extension
+          path: release/
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: release/X-Reply-AI-Extension-v${{ github.event.release.tag_name }}.zip
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+          body: |
+            ## 🤖 X Reply AI Extension - ${{ github.ref_name }}
+            
+            **Automatic release created from commit:** `${{ github.sha }}`
+            
+            ### 📦 Downloads
+            - **Extension ZIP**: Download the attached `X-Reply-AI-Extension-v${{ github.ref_name }}.zip` file
+            - **Install**: Unzip and load as unpacked extension in Chrome Developer Mode
+            
+            ### 🔧 Build Details
+            - **Commit**: ${{ github.sha }}
+            - **Build Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+            - **Workflow**: ${{ github.workflow }}
+            
+            ---
+            *This release was automatically created by GitHub Actions.*
+          files: release/X-Reply-AI-Extension-v${{ github.ref_name }}.zip
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'rc') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
