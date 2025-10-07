@@ -56,23 +56,20 @@ jobs:
           if [ "${{ github.event_name }}" = "release" ]; then
             VERSION="${{ github.event.release.tag_name }}"
           else
-            VERSION="latest-${{ github.sha }}"
+            # Use date and short commit hash for development builds
+            VERSION="$(date +%Y%m%d)-${{ github.sha }}"
+            VERSION="${VERSION:0:15}"  # Truncate to reasonable length
           fi
-          zip -r ../release/X-Reply-AI-v${VERSION}.zip .
+          EXTENSION_NAME="X-Reply-AI-Extension-v${VERSION}.zip"
+          zip -r "../release/${EXTENSION_NAME}" .
           cd ..
+          echo "Created extension: ${EXTENSION_NAME}"
           ls -la release/
 
-      - name: Upload build artifacts
+      - name: Upload extension archive
         uses: actions/upload-artifact@v4
         with:
-          name: x-reply-ai-extension-${{ github.sha }}
-          path: dist/
-          retention-days: 30
-
-      - name: Upload release archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: x-reply-ai-archive-${{ github.sha }}
+          name: x-reply-ai-extension
           path: release/
           retention-days: 30
 
@@ -82,7 +79,12 @@ jobs:
           # Create releases folder if it doesn't exist
           mkdir -p releases
           
-          # Copy the archive to releases folder
+          # Clean up old releases (keep only latest 5)
+          cd releases
+          ls -t *.zip 2>/dev/null | tail -n +6 | xargs -r rm -f
+          cd ..
+          
+          # Copy the new archive to releases folder
           cp release/*.zip releases/
           
           # Configure git
@@ -94,7 +96,8 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "🤖 Add extension release: $(ls releases/*.zip | head -1 | xargs basename)" || echo "Commit failed, possibly due to conflicts"
+            NEW_FILE=$(ls releases/*.zip | head -1 | xargs basename)
+            git commit -m "🤖 Add extension release: ${NEW_FILE}" || echo "Commit failed, possibly due to conflicts"
             git push origin main || echo "Push failed, but build artifacts are still available"
           fi
 
@@ -110,6 +113,6 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
-          files: release/X-Reply-AI-v${{ github.event.release.tag_name }}.zip
+          files: release/X-Reply-AI-Extension-v${{ github.event.release.tag_name }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
